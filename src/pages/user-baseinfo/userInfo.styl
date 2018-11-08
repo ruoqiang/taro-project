@@ -1,0 +1,268 @@
+#user-baseinfo {
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  background: #f5f5f5;
+}
+.form-box {
+  background: #fff;
+  position: relative;
+  position: relative;
+}
+.form-box:after {
+  display: block;
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  border-top: 1px solid #ddd;
+  content: ' ';
+  width: 100%;
+}
+.form-box:before {
+  display: block;
+  position: absolute;
+  left: 0;
+  top: 0;
+  border-top: 1px solid #ddd;
+  content: ' ';
+  width: 100%;
+}
+.icon-more {
+  position: absolute;
+  right: 15px;
+  top: 15px;
+  width: 20px;
+  height: 20px;
+  font-size: 20px;
+  color: #333;
+}
+.icon-more::after{
+  content: '>';
+
+  position: absolute;
+  top: 0px;
+  font-size 17px;
+  color: #999;
+  }
+.buttonBox {
+  margin-top: 42px;
+}
+.buttonBox.disable {
+  pointer-events: none;
+}
+.selected-car-box {
+  width: 75%;
+  font-size: 0;
+  position: absolute;
+  left: 94px;
+  top: -1px;
+  height: 49px;
+  line-height: 49px;
+  pointer-events: none;
+}
+.selected-car-box input {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 14px;
+  margin: 0 4px;
+  -webkit-appearance: none;
+}
+.selected-car-box input:nth-child(2) {
+  margin-top: -1px !important;
+}
+.selected-car-box input:last-child {
+  border: 1px solid #2d4ed1;
+}
+.selected-car-box input:nth-child(3) {
+  margin-right: 12px;
+}
+.selected-car-box .line {
+  display: inline-block;
+  width: 1px;
+  height: 22px;
+  background: #ccc;
+  vertical-align: middle;
+  position: absolute;
+  left: 63px;
+  top: 12px;
+}
+.selectedValueBox {
+  font-size: 0;
+  position: absolute;
+  left: 80px;
+  top: 0px;
+}
+.selectedValueBox>input {
+  width: 20px;
+  height: 20px;
+  border: 1px solid #ccc;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  font-size: 14px;
+  margin: 0 4px;
+  -webkit-appearance: none;
+  pointer-events: none;
+  margin-top :-2px !important;
+}
+.selectedValueBox input.first{
+  margin-top: -1px !important;
+}
+.selectedValueBox input:nth-child(3) {
+  margin-right: 12px;
+}
+.selectedValueBox .line {
+  display: inline-block;
+  width: 1px;
+  height: 22px;
+  background: #ccc;
+  vertical-align: middle;
+  position: absolute;
+  left: 63px;
+  top: 12px;
+}
+.buttonBox {
+  margin-top: 42px;
+}
+.sex-box {
+  position: absolute;
+  left: 56px;
+  top: 0px;
+}
+.sex-box.self-box {
+  left: 158px;
+}
+.sex-box span {
+  width: 15px;
+  height: 15px;
+  border: 1px solid #ccc;
+  text-align: center;
+  display: inline-block;
+  vertical-align: middle;
+  border-radius: 50%;
+  margin-right: 0px;
+}
+.sex-box span.active {
+  color: #46c33b;
+  background: url("../../common/image/checked.png");
+  border: none;
+  width: 17px;
+  height: 17px;
+  background-size: 100%;
+}
+.sex-box span:active {
+  background: url("../../common/image/checked.png");
+  border: none;
+  width: 17px;
+  height: 17px;
+  background-size: 100%;
+}
+.sex-box b {
+  color: #333;
+  margin: 0 13px 0 0px;
+  vertical-align: middle;
+  display: inline-block;
+  padding-left: 7px;
+}
+.get-code {
+  position: absolute;
+  right: 0px;
+  top: 0px;
+  height: 49px;
+  line-height: 49px;
+  width: 109px;
+  text-align: center;
+}
+.line {
+  position: absolute;
+  right: 109px;
+  top: 0px;
+  background: #ccc;
+  width: 1px;
+  height: 49px;
+}
+.h15 {
+  padding-top: 15px;
+}
+.h10 {
+  padding-top: 10px;
+}
+
+.form-box .list-box{
+    padding: 15px 0
+}
+
+.form-box .list-box ul{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 83%;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    margin: 0 auto
+}
+
+.form-box .list-box ul li{
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 42%;
+    flex: 0 0 42%;
+    position: relative
+}
+
+.form-box .list-box ul li .img-box{
+    width: 135px;
+    height: 135px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 3px;
+    border: 1px solid #ddd
+}
+
+.form-box .list-box ul li .img-box img{
+    width: 100%;
+    height: 100%
+}
+
+.form-box .list-box ul li p.desc{
+    width: 100%;
+    text-align: center;
+    margin-top: 11px;
+    font-size: 14px
+}
+
+.form-box .list-box ul li input{
+    opacity: 0
+}
+
+.form-box .list-box ul li .inputBox,.form-box .list-box ul li input{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 135px
+}
+.selectedAreaWrap {
+   display:inline-block;
+    min-width:auto;
+    position:absolute;
+    left:88px;
+    top:1px;
+    width:100%;
+  }
+ .tips-status-box
+  position:absolute
+  left: 0
+  top:0
+  width: 100%
+  height:100%
+  background:#fff
+  .ptc
+    margin-top:30%
+    position:relative

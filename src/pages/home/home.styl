@@ -1,0 +1,132 @@
+  @import "../../common/styl/variable"
+  //@import "~common/stylus/mixin"
+  .home
+    height:100%;
+    overflow:hidden
+    position:fixed
+    top:0
+    left:0
+    bottom:0
+    right:0
+    background:#f5f5f5
+    touch-action: none;
+  .slider-wrapper
+        touch-action: none;
+        position: relative
+        width: 100%
+        height: 0
+        padding-top: 56.5%
+        overflow: hidden
+        .slider-content
+          position: absolute
+          top: 0
+          left: 0
+          width: 100%
+          height: 100%
+  .card-box
+    padding:10px 0
+    margin-top:10px
+    display: -webkit-flex
+    display:flex
+    background:#fff
+    flex-wrap: wrap
+    text-align: center
+    .card-item
+      float:left
+      width:25%
+      flex:0 0 25%
+      img
+        width:40px
+        height:40px
+      p
+        font-size:12px
+        color:$color-text
+        margin-top:7px
+      &.second-line
+        margin-top:10px
+  .actionBox
+    padding:0 0px 13px 13px
+    text-align:left
+    font-size:14px
+    color:$color-text
+    background:#fff
+    &.mt12
+      margin-top:12px
+    h2
+      height:38px
+      // padding-left:15px
+      line-height:38px
+    .actionSlideWrap
+      width:100%
+      // overflow:hidden
+      // height:132px
+      .actionSlide
+        display: flex;
+        width:990px
+        word-break: keep-all;
+        white-space: nowrap;
+        p
+          width:320px
+          margin-right:8px
+          box-sizing: content-box;
+          &.no-padding
+            margin-right:0px
+        img
+          width:100%
+  .loading-container
+    position: absolute
+    width: 100%
+    top: 50%
+    transform: translateY(-50%)
+.h12
+  height:12px
+.waiting
+  font-size: 14px
+  color: #FFFFFF
+  background: rgba(0,0,0,0.60)
+  border-radius: 5px
+  position:absolute
+  left:50%
+  top:180px
+  padding:0px 12px
+  height:26px
+  line-height:26px
+  margin-left:-40px
+  transition: top 0.3s cubic-bezier(0.215, 0.610, 0.355, 1.000)
+  // display:none
+  opacity:0
+
+.actionBox {
+  padding: 0 0px 13px 13px;
+  text-align: left;
+  font-size: 14px;
+  color: #333;
+  background: #fff;
+}
+.actionBox.mt12 {
+  margin-top: 12px;
+}
+.actionBox h2 {
+  height: 38px;
+  line-height: 38px;
+}
+.actionBox .actionSlideWrap {
+  width: 100%;
+}
+.actionBox .actionSlideWrap .actionSlide {
+  display: flex;
+  width: 990px;
+  word-break: keep-all;
+  white-space: nowrap;
+}
+.actionBox .actionSlideWrap .actionSlide p {
+  width: 320px;
+  margin-right: 8px;
+          box-sizing: content-box;
+}
+.actionBox .actionSlideWrap .actionSlide p.no-padding {
+  margin-right: 0px;
+}
+.actionBox .actionSlideWrap .actionSlide img {
+  width: 100%;
+}
