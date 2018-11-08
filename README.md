@@ -11,3 +11,5 @@ taro底层代码解析器的锅
 taro小程序中 最好先build重新生成dist目录 然后再dev 解决意外报错
 3. 自定义组件 和react中写法基本一致 
     注意：传递方法的时候记得以on开头
+4. 路由跳转传参  Taro.navigateBack({url: '/pages/index/index?type=1'})
+    获取路由跳转传参 this.$router.params.type

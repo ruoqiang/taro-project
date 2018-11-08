@@ -19,6 +19,8 @@ export default class selectCar extends Component{
         this.codeBtnDisable = false
     }
     componentDidMount() {
+        console.log('this.$router.params', this.$router)
+        this.$router.params
         Taro.showLoading({ title: '加载中' })
         let params = {
             token: Taro.getStorageSync('token')

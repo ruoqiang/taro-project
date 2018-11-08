@@ -82,11 +82,11 @@ export default class Index extends Component {
                     <View className='p'>申请记录</View>
                 </View>
                 <View className='card-item'>
-                    <Image className='img' src={require('../../common/image/icon-bill.png')} alt='' onClick={this.goToNext.bind(this,'/pages/select-car/select-car')} />
+                    <Image className='img' src={require('../../common/image/icon-bill.png')} alt='' onClick={this.goToNext.bind(this,'/pages/select-car/select-car?type=1')} />
                     <View className='p'>账单查询</View>
                 </View>
                 <View className='card-item'>
-                    <Image className='img' src={require('../../common/image/icon-applyRecord.png')} alt='' />
+                    <Image className='img' src={require('../../common/image/icon-applyRecord.png')} alt='' onClick={this.goToNext.bind(this,'/pages/select-car/select-car?type=2')} />
                     <View className='p'>申请记录</View>
                 </View>
             </View>
