@@ -20,6 +20,7 @@ export default class selectCar extends Component{
     }
     componentDidMount() {
         console.log('this.$router.params', this.$router)
+        console.log('this', this)
         this.$router.params
         Taro.showLoading({ title: '加载中' })
         let params = {
@@ -37,7 +38,7 @@ export default class selectCar extends Component{
         })
     }
     selectCarGotoPage(item) {
-        let _type = this.type
+        let _type = this.$router.params.type
         Taro.setStorageSync('carListInfo', JSON.stringify(item))
         //还款记录
         if (_type === '1') {
@@ -45,7 +46,7 @@ export default class selectCar extends Component{
         }
         //通行记录 
         if (_type === '2') {
-          Taro.navigateTo({url: '/pages/recordCar/recordCar'})
+          Taro.navigateTo({url: '/pages/record-car/record-car'})
         }
       }
     back() {

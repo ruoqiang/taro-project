@@ -3,9 +3,9 @@ import Taro, { Component } from '@tarojs/taro'
 import { View, Image, ScrollView } from '@tarojs/components'
 import * as HTTP from '../../common/js/http'
 import TipsStatus from '../../base/tipsStatus/tipsStatus'
-import './userInfo.styl'
+import '../select-car/select-car.styl'
 
-export default class userBaseInfo extends Component{
+export default class Bill extends Component{
     config = {
         navigationBarTitleText: '选择车辆'
     }
@@ -51,7 +51,7 @@ export default class userBaseInfo extends Component{
     render() {
         return (
             <View id='select-car'>
-                userBaseInfo
+                Bill
             </View>
         )
     } 

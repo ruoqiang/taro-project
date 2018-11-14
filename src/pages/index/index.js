@@ -74,7 +74,7 @@ export default class Index extends Component {
       <View className='card-box-wrap'>
             <View className='card-box'>
                 <View className='card-item'>
-                    <Image className='img' src={require('../../common/image/icon-ETC.png')} alt='' onClick={this.goToNext.bind(this,'/pages/login/login')} />
+                    <Image className='img' src={require('../../common/image/icon-ETC.png')} alt='' onClick={this.goToNext.bind(this,'/pages/user-baseinfo/user-baseinfo')} />
                     <View className='p'>办理ETC</View>
                 </View>
                 <View className='card-item'>

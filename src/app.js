@@ -8,13 +8,17 @@ class App extends Component {
 
   config = {
     pages: [
-      
       'pages/index/index',
       'pages/select-car/select-car',
+      
       'pages/login/login',
+      'pages/record-car/record-car',
       'pages/forgetpassword/forgetpassword',
       'pages/register/register',
-      'pages/application-record-list/application-record-list'
+      'pages/user-baseinfo/user-baseinfo',
+      'pages/application-record-list/application-record-list',
+      
+      'pages/bill/bill'
     ],
     window: {
       backgroundTextStyle: 'light',
