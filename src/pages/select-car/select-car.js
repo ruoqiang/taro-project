@@ -18,7 +18,7 @@ export default class selectCar extends Component{
         this.btnDisable = false
         this.codeBtnDisable = false
     }
-    componentDidMount() {
+    componentDidShow() {
         console.log('this.$router.params', this.$router)
         console.log('this', this)
         this.$router.params

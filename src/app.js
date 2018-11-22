@@ -1,24 +1,30 @@
+import '@tarojs/async-await' //add 11-20
+
 import Taro, { Component } from '@tarojs/taro'
 import Index from './pages/index'
+
+import { Provider } from '@tarojs/redux' //add 11-20
+import configStore from './store' //add 11-20
 
 import './app.styl'
 import './common/styl/base.styl'
 
+const store = configStore()
 class App extends Component {
 
   config = {
     pages: [
       'pages/index/index',
-      'pages/select-car/select-car',
-      
-      'pages/login/login',
       'pages/record-car/record-car',
+      'pages/select-car/select-car',
+      'pages/login/login',
       'pages/forgetpassword/forgetpassword',
       'pages/register/register',
       'pages/user-baseinfo/user-baseinfo',
+      'pages/user-carinfo/user-carinfo',
       'pages/application-record-list/application-record-list',
-      
       'pages/bill/bill'
+      // 'pages/demo/demo'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -38,7 +44,10 @@ class App extends Component {
 
   render () {
     return (
-      <Index />
+      <Provider store={store}>
+          <Index />
+      </Provider>
+      
     )
   }
 }

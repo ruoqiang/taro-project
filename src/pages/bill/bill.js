@@ -17,7 +17,7 @@ export default class Bill extends Component{
         this.btnDisable = false
         this.codeBtnDisable = false
     }
-    componentDidMount() {
+    componentDidShow() {
         console.log('this.$router.params', this.$router)
         console.log('this', this)
         this.$router.params
@@ -51,7 +51,9 @@ export default class Bill extends Component{
     render() {
         return (
             <View id='select-car'>
-                Bill
+                <View className='tipsStatusBox1' style={{paddingTop: '0px'}}>
+                        <TipsStatus buttonHide title='没有账单记录'></TipsStatus>
+                </View>
             </View>
         )
     } 

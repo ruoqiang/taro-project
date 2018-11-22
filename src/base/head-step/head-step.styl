@@ -1,0 +1,87 @@
+// @import "../../common/styl/variable"
+@import "../../common/styl/variable"
+@import "../../common/styl/mixin"
+.setp-tips-box
+    padding-top:25px;display:flex
+    width:84%
+    margin:0 auto
+    justify-content: space-between
+    .span 
+      width:150px
+      height:42px
+      text-align: center
+      line-height:42px
+      color:#999999
+      font-size:26px
+      display:inline-block
+      color:#999
+      &.active
+        color:$color-theme
+        position:relative
+    input::-webkit-input-placeholder
+      text-shadow: none
+      -webkit-text-fill-color: initial
+      -webkit-user-select: auto !important
+      font-size: 30px
+
+  .setp-dot-box{
+       width:67%;
+       margin:0 auto;
+       justify-content: space-between;
+       display:flex;
+       margin-top:20px;
+       align-items:center
+  }
+  .setp-dot-box .span {
+      width:28px;
+      height:28px;
+      background:url(./step_dot_n.png);
+       background-size:100% 100%;
+      display:inline-block;
+      position:relative;
+
+  }
+    .setp-dot-box .span.active {
+        // background:url(./step_dot.png);
+        bg-image('./step_dot')
+        position:relative
+        background-size:100% 100%
+
+  }
+   .setp-dot-box .span.setp-line {
+        height:1PX;
+        width:90px;
+        margin-top:20px;
+        position:relative;
+        background:none;
+  }
+  // @media only screen and (min-width: 375px) {
+  //      .setp-dot-box{
+  //      width:69%;
+  //     }
+  //     .setp-dot-box .span.setp-line{
+  //        width:126px;
+  //     }
+  // }
+  // @media only screen and (min-width: 414px) {
+  //   .setp-dot-box .span.setp-line{
+  //     height:1PX;
+  //      width:142px;
+  //      margin-top:10px;
+  //      position:relative;
+  //      background:none;
+  //   }
+  // }
+  .setp-line:after{
+      display: block;
+      position: absolute;
+      left: 0px;
+      bottom: 8px;
+      content: " ";
+      width: 100%;
+      border-top: 1PX solid rgb(204, 204, 204);
+  }
+  .setp {
+       height:186px;
+       width:100%;
+  }

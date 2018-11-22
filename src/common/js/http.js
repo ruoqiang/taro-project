@@ -22,7 +22,7 @@ export function get(intefaceName) {
  * @param {是否只传递默认data数据} pure 
  */
 export function post(intefaceName, data, pure) {
-  return new Promise ((resolve,reject) => {
+  return new Promise ((resolve, reject) => {
     data = pure ? data : {data: data,token: Taro.getStorageSync('token') || '1111'}
     Taro.request({
       url: url + intefaceName,
@@ -43,7 +43,7 @@ export function post(intefaceName, data, pure) {
         } else {
           showTips(res.data.message)
         }
-        reject()
+        reject(res.data)
       }
     })
   })

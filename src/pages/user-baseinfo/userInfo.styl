@@ -1,9 +1,12 @@
+.taro_page{
+  background: #f5f5f5;
+  }
 #user-baseinfo {
-  position: absolute;
-  left: 0;
-  right: 0;
-  top: 0;
-  bottom: 0;
+  // position: fixed;
+  // left: 0;
+  // right: 0;
+  // top: 0;
+  // bottom: 0;
   background: #f5f5f5;
 }
 .form-box {
@@ -16,7 +19,7 @@
   position: absolute;
   left: 0;
   bottom: 0;
-  border-top: 1px solid #ddd;
+  border-top: 1PX solid #ddd;
   content: ' ';
   width: 100%;
 }
@@ -25,21 +28,51 @@
   position: absolute;
   left: 0;
   top: 0;
-  border-top: 1px solid #ddd;
+  border-top: 1PX solid #ddd;
   content: ' ';
   width: 100%;
 }
+.form-list
+    padding: 0;
+    height: 98px;
+    line-height: 98px;
+    position: relative;
+    display: flex
+    align-items: center
+    margin-left: 28px
+    &:after
+      display: block;
+      position: absolute;
+      left: 0;
+      bottom: 0;
+      border-top: 1PX solid #ddd;
+      content: " ";
+      width: 100%;
+    .form-title
+      font-size: 32px;
+    .label
+        font-size: 28px;
+        color: #333;
+        // min-width: 100px;
+        display: inline-block;
+        vertical-align: middle;
+        margin-right: 1em;
+    .input
+      font-size: 28px;
+      color: #333;
+.weui-input
+  width: auto
 .icon-more {
   position: absolute;
-  right: 15px;
-  top: 15px;
-  width: 20px;
-  height: 20px;
-  font-size: 20px;
+  right: 30px;
+  top: 30px;
+  width: 40px;
+  height: 40px;
+  font-size: 40px;
   color: #333;
 }
 .buttonBox {
-  margin-top: 42px;
+  margin-top: 84px;
 }
 .buttonBox.disable {
   pointer-events: none;
@@ -48,21 +81,21 @@
   width: 75%;
   font-size: 0;
   position: absolute;
-  left: 94px;
-  top: -1px;
-  height: 49px;
-  line-height: 49px;
+  left: 188px;
+  top: -1PX;
+  height: 98px;
+  line-height: 98px;
   pointer-events: none;
 }
 .selected-car-box input {
-  width: 20px;
-  height: 20px;
-  border: 1px solid #ccc;
+  width: 40px;
+  height: 40px;
+  border: 1PX solid #ccc;
   text-align: center;
   display: inline-block;
   vertical-align: middle;
-  font-size: 14px;
-  margin: 0 4px;
+  font-size: 28px;
+  margin: 0 8px;
   -webkit-appearance: none;
 }
 .selected-car-box input:nth-child(2) {
@@ -124,43 +157,47 @@
 }
 .sex-box {
   position: absolute;
-  left: 56px;
+  left: 112px;
   top: 0px;
+  display: flex
+  align-items: center
 }
 .sex-box.self-box {
-  left: 158px;
+  left: 336px;
 }
-.sex-box span {
-  width: 15px;
-  height: 15px;
-  border: 1px solid #ccc;
+.sex-box .span {
+  width: 30px;
+  height: 30px;
+  border: 1PX solid #ccc;
   text-align: center;
   display: inline-block;
   vertical-align: middle;
   border-radius: 50%;
   margin-right: 0px;
 }
-.sex-box span.active {
+.sex-box .span.active {
   color: #46c33b;
   background: url("../../common/image/checked.png");
   border: none;
-  width: 17px;
-  height: 17px;
+  width: 34px;
+  height: 34px;
   background-size: 100%;
 }
-.sex-box span:active {
+.sex-box .span:active {
   background: url("../../common/image/checked.png");
   border: none;
-  width: 17px;
-  height: 17px;
+  width: 34px;
+  height: 34px;
   background-size: 100%;
+  
 }
-.sex-box b {
+.sex-box .b {
   color: #333;
   margin: 0 13px 0 0px;
   vertical-align: middle;
   display: inline-block;
-  padding-left: 7px;
+  padding-left: 14px; //--------------this
+  font-size :28px
 }
 .get-code {
   position: absolute;
@@ -180,66 +217,12 @@
   height: 49px;
 }
 .h15 {
-  padding-top: 15px;
+  padding-top: 30px;
 }
 .h10 {
-  padding-top: 10px;
+  padding-top: 20px;
 }
 
-.form-box .list-box{
-    padding: 15px 0
-}
-
-.form-box .list-box ul{
-    display: -webkit-box;
-    display: -ms-flexbox;
-    display: flex;
-    width: 83%;
-    -webkit-box-pack: justify;
-    -ms-flex-pack: justify;
-    justify-content: space-between;
-    margin: 0 auto
-}
-
-.form-box .list-box ul li{
-    -webkit-box-flex: 0;
-    -ms-flex: 0 0 42%;
-    flex: 0 0 42%;
-    position: relative
-}
-
-.form-box .list-box ul li .img-box{
-    width: 135px;
-    height: 135px;
-    margin: 0 auto;
-    overflow: hidden;
-    border-radius: 3px;
-    border: 1px solid #ddd
-}
-
-.form-box .list-box ul li .img-box img{
-    width: 100%;
-    height: 100%
-}
-
-.form-box .list-box ul li p.desc{
-    width: 100%;
-    text-align: center;
-    margin-top: 11px;
-    font-size: 14px
-}
-
-.form-box .list-box ul li input{
-    opacity: 0
-}
-
-.form-box .list-box ul li .inputBox,.form-box .list-box ul li input{
-    position: absolute;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 135px
-}
 .selectedAreaWrap {
    display:inline-block;
     min-width:auto;

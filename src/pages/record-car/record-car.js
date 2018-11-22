@@ -29,10 +29,13 @@ export default class RecordCar extends Component{
         this.hasMore = true
         this.page = 0
     }
-    // refRecordImg = (node) => this.refRecordImg = node
-    componentDidMount() {
+    componentDidShow() {
         Taro.showLoading({ title: '加载中' })
         this.loadMore(true)
+        console.log('getEnv', Taro.getEnv())
+        // if (Taro.getEnv() === 'ALIPAY') {
+        //     console.log('getEnv', Taro.getEnv())
+        // }
         setTimeout(()=> { //dom渲染好了去计算
             this.getScrollViewHeiht()
         }, 50)
@@ -155,7 +158,7 @@ export default class RecordCar extends Component{
     render() {
         return (
             <View id='record-car'>
-                <View className='record-img' >
+                <View className='record-img'>
                 <View className='record-time-span'>
                     <View className='span-title'>
                     出站时间段
@@ -178,7 +181,7 @@ export default class RecordCar extends Component{
                 <View id='record-list'>
                         <View className='h20'></View>
                         <ScrollView className='ScrollView' scrollY onScrollToLower={this.onScrollToLower.bind(this)} lowerThreshold={20}>
-                            <View className='record-list-box hasBj'>
+                            {/* <View className='record-list-box hasBj'> */}
                             {this.state.recordList.map((item,index)=> {
                                 return (
                                     <View className='record-list' key={index}>
@@ -229,7 +232,7 @@ export default class RecordCar extends Component{
                                     <TipsStatus buttonHide title='没有记录'></TipsStatus>
                                 </View>
                             ):null}
-                        </View>
+                        {/* </View> */}
                     </ScrollView>
                     </View>
                     {

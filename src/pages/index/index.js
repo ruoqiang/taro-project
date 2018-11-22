@@ -1,50 +1,50 @@
 import Taro, { Component } from '@tarojs/taro'
+import { connect } from '@tarojs/redux'
 import { View, ScrollView, Swiper, SwiperItem, Image } from '@tarojs/components'
 import * as HTTP from '../../common/js/http'
+
+import { add, minus, asyncAdd, getUserBaseInfo } from '../../store/actions/counter'
+
 import './index.styl'
 
-export default class Index extends Component {
+@connect(({ counter }) => ({
+  counter
+}), (dispatch) => ({
+  add () {
+    dispatch(add())
+  },
+  dec () {
+    dispatch(minus())
+  },
+  asyncAdd () {
+    dispatch(asyncAdd())
+  },
+  getUserBaseInfo(cb) { //注意这个 如果下面需要使用回调函数的话，必须这里也要传递一下 跟原生react的redux，react-redux不一样
+		dispatch(getUserBaseInfo(cb)) 
+	}
+}))
 
+export default class Index extends Component {
   config = {
     navigationBarTitleText: '首页'
   }
   constructor(props) {
     super(props)
-    this.state = {
-      loading: true,
-      list: []
-    }
-  }
-  componentWillMount () { }
-
-  componentDidMount () { 
-    // this.tokenCheck()
   }
   tokenCheck() {
-    // Taro.showLoading({ title: '加载中' })
     let params = {
       token: Taro.getStorageSync('token') || '1111'
     }
     HTTP.post('SubInfo/CheckStep', params, true).then(()=> {
-      // Taro.navigateTo({url: '/pages/index/index'})
       Taro.hideLoading()
+    }).catch((err)=> {
+      console.log('catch', err);
     })
   }
   goToNext(url) {
-    Taro.navigateTo({url: url})
-  }
-  componentWillUnmount () { }
-
-  componentDidShow () { }
-
-  componentDidHide () { }
-  onScroll (event) {
-    // console.log(event );
-    
-  }
-  onScrollToLower() {
-      console.log('onScrolltoupper');
-      
+    this.props.getUserBaseInfo(function(){ /* eslint-disable-line */
+      Taro.navigateTo({url: url})
+    })
   }
   render () {
     return (
@@ -92,7 +92,7 @@ export default class Index extends Component {
             </View>
         </View>
         <View className='lineSplit'></View>
-        <View className='h2'>新闻资讯</View> 
+        <View className='h2'>新闻资讯{this.props.counter.num}</View> 
         <ScrollView
           className='scrollview'
           scrollX
@@ -101,12 +101,11 @@ export default class Index extends Component {
           style='height: 150px;'
           lowerThreshold='20'
           upperThreshold='20'
-          onScrollToLower={this.onScrollToLower.bind(this)}
-          onScroll={this.onScroll.bind(this)} >
+           >
           <View style={{display: 'flex'}}>
             <View className='actionSlide' ref={this.actionSlideCon}>
-                <View className='p'><Image className='img' src={require('../../common/image/action001.png')} alt='' /></View>
-                <View className='p no-padding' ><Image className='img' src={require('../../common/image/action002.png')} alt='' /></View>
+                <View className='p'><Image className='img' src={require('../../common/image/action001.png')} alt='' onClick={this.props.add} /></View>
+                <View className='p no-padding' ><Image className='img' src={require('../../common/image/action002.png')} alt='' onClick={this.props.getUserBaseInfo} /></View>
             </View>
           </View>
         </ScrollView>

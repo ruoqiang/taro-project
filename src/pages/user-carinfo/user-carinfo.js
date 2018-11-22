@@ -4,7 +4,7 @@ import { connect } from '@tarojs/redux'
 import * as HTTP from '../../common/js/http'
 import { showTips } from '../../common/js/util'
 import HeadStep from '../../base/head-step/head-step'
-import './userInfo.styl'
+import '../user-baseinfo/userInfo.styl'
 import '../login/login.styl' //微信端样式不能复用login中的样式，需要再次引用一次
 
 import { getUserBaseInfo } from '../../store/actions/counter'
@@ -16,15 +16,15 @@ import { getUserBaseInfo } from '../../store/actions/counter'
 	}
 }))
 
-export default class userBaseInfo extends Component{
+export default class userCarInfo extends Component{
     config = {
         navigationBarTitleText: '选择车辆'
     }
     constructor(props) {
         super(props)
         this.state = {
-            isSelf: true,
-            sex: '1',
+            carno: ['沪','A','B'],
+            defaultcarValue: ['杭','A'],
             btnDisable: false
         }
         this.forms = {}
@@ -95,7 +95,7 @@ export default class userBaseInfo extends Component{
             this.setState({btnDisable: false})
             // 成功后
             that.props.getUserBaseInfo()
-            Taro.navigateTo({url: '/pages/user-carinfo/user-carinfo'})
+            Taro.navigateBack({url: '/pages/user-carinfo/user-carinfo'})
         }).catch(()=> {
             this.setState({btnDisable: false})
         })
@@ -112,60 +112,39 @@ export default class userBaseInfo extends Component{
         return (
             <View id='user-baseinfo'>
                 <ScrollView ref={this.scroll}>
-                    <HeadStep step={1}></HeadStep>
+                    <HeadStep step={2}></HeadStep>
                         <View className='form-box'>
                             <View className='form-list'>
-                                    <View className='form-title'>申请人信息</View>
+                                    <View className='form-title'>车辆信息</View>
                             </View>
                             <View className='form-list'>
-                                <Text className='label'>姓名</Text> 
-                                <Input type='text' className='input' placeholder='请输入姓名'  maxLength='13'  value={this.newApply && this.newApply['Name']}  onChange={this.handleInputChange.bind(this,'Name')} />
+                                <Text className='label'>车牌颜色</Text> 
+                                <Input type='text' className='input' placeholder='请输入车牌颜色'  maxLength='13' value={this.newApply && this.newApply['CarColor']} />
                             </View>
                             <View className='form-list'>
+                                <Text className='label'>车牌号</Text> 
+                                <Input type='text' className='input' placeholder='车牌号'  maxLength='13' value={this.newApply && this.newApply['CarNum']} />
+                            </View>
+                            
+                            <View className='form-list'>
+                                <Text className='label'>发动机号</Text> 
+                                <Input type='text' className='input' placeholder='请输入发动机号'  maxLength='13'  value={this.newApply && this.newApply['EngineNum']}  onChange={this.handleInputChange.bind(this,'EngineNum')} />
+                            </View>
+                            <View className='form-list'>
+                                <Text className='label'>车辆品牌</Text> 
+                                <Input type='text' className='input' placeholder='请输入车辆品牌'  maxLength='18' value={this.newApply && this.newApply['CarBrand']} onChange={this.handleInputChange.bind(this,'CarVin')} />
+                            </View>
+                            <View className='form-list'>
+                                <Text className='label'>核定载重</Text> 
+                                <Input type='text' className='input' placeholder='请输入核定载重'  maxLength='11' value={this.newApply && this.newApply['CarLoad']} onChange={this.handleInputChange.bind(this,'Phone')} />
+                            </View> 
+                        </View>
+                        <View className='form-list'>
                                 <Text className='label'>性别</Text>
                                     <View className='sex-box'>
                                         <View className={this.sex=== '1' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'1')}></View><View className='b'>是</View> <View className={this.sex=== '0' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'0')}></View><View  className='b'>否</View>
                                     </View>
                             </View>
-                            <View className='form-list'>
-                                <Text className='label'>身份证号</Text> 
-                                <Input type='text' className='input' placeholder='请输入身份证号'  maxLength='18' value={this.newApply && this.newApply['IDNumber']} onChange={this.handleInputChange.bind(this,'IDNumber')} />
-                            </View>
-                            <View className='form-list'>
-                                <Text className='label'>手机号</Text> 
-                                <Input type='text' className='input' placeholder='请输入手机号'  maxLength='11' value={this.newApply && this.newApply['Phone']} onChange={this.handleInputChange.bind(this,'Phone')} />
-                            </View> <View className='form-list'>
-                                <Text className='label'>邀请码（选填）</Text> 
-                                <Input type='text' className='input' placeholder='请输入邀请码'  maxLength='13' value={this.newApply && this.newApply['Inviter']} />
-                            </View>
-                        </View>
-                        <View className='h10'></View>
-                        <View className='form-box'>
-                            <View className='form-list'>
-                                <Text className='label'>是否为申请人本人车辆</Text>
-                                    <View className='sex-box self-box'>
-                                        <View className={this.isSelf=== true ? 'active span' : 'span'} onClick={this.switchSelf.bind(this,true)}></View><View className='b'>是</View> <View className={this.isSelf=== false ? 'active span' : 'span'} onClick={this.switchSelf.bind(this,false)}></View><View  className='b'>否</View>
-                                    </View>
-                            </View>
-                        </View>
-                        <View className='h10'></View>
-                        <View className='form-box' style={{display: this.isSelf ? 'none' : 'block'}}>
-                            <View className='form-list'>
-                                    <View className='form-title'>车主信息</View>
-                            </View>
-                            <View className='form-list'>
-                                <Text className='label'>车主姓名</Text> 
-                                <Input type='text' className='input' placeholder='请输入车主姓名'  maxLength='13' value={this.newApply && this.newApply['CarOwnerName']}  onChange={this.handleInputChange.bind(this,'CarOwnerName')} />
-                            </View>
-                            <View className='form-list'>
-                                <Text className='label'>车主身份证号</Text> 
-                                <Input type='text' className='input' placeholder='请输入车主身份证号'  maxLength='18' value={this.newApply && this.newApply['CarOwnerIDNum']}  onChange={this.handleInputChange.bind(this,'CarOwnerIDNum')} />
-                            </View>
-                            <View className='form-list'>
-                                <Text className='label'>手机号</Text> 
-                                <Input type='text' className='input' placeholder='请输入手机号'  maxLength='11' value={this.newApply && this.newApply['CarOwnerPhone']}  onChange={this.handleInputChange.bind(this,'CarOwnerPhone')} />
-                            </View>
-                        </View>
                         <View className='buttonBox'>
                             <View className={'button ' + (this.state.btnDisable ? 'disable': '')} onClick={this.submitInfo.bind(this)}>
                                  下一步
