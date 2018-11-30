@@ -81,15 +81,15 @@
   width: 75%;
   font-size: 0;
   position: absolute;
-  left: 188px;
+  left: 160px;
   top: -1PX;
   height: 98px;
   line-height: 98px;
   pointer-events: none;
 }
 .selected-car-box input {
-  width: 40px;
-  height: 40px;
+  width: 44px;
+  height: 44px;
   border: 1PX solid #ccc;
   text-align: center;
   display: inline-block;
@@ -97,6 +97,7 @@
   font-size: 28px;
   margin: 0 8px;
   -webkit-appearance: none;
+  box-sizing: border-box;
 }
 .selected-car-box input:nth-child(2) {
   margin-top: -1px !important;
@@ -105,52 +106,53 @@
   border: 1px solid #2d4ed1;
 }
 .selected-car-box input:nth-child(3) {
-  margin-right: 12px;
+  margin-right: 24px;
 }
 .selected-car-box .line {
   display: inline-block;
-  width: 1px;
-  height: 22px;
+  width: 1PX;
+  height: 44px;
   background: #ccc;
   vertical-align: middle;
   position: absolute;
-  left: 63px;
-  top: 12px;
+  left: 126px;
+  top: 24px;
 }
 .selectedValueBox {
   font-size: 0;
   position: absolute;
-  left: 80px;
+  left: 160px;
   top: 0px;
 }
 .selectedValueBox>input {
-  width: 20px;
-  height: 20px;
-  border: 1px solid #ccc;
+  width: 44px;
+  height: 44px;
+  border: 1PX solid #ccc;
   text-align: center;
   display: inline-block;
   vertical-align: middle;
-  font-size: 14px;
-  margin: 0 4px;
+  font-size: 28px;
+  margin: 0 8px;
   -webkit-appearance: none;
   pointer-events: none;
-  margin-top :-2px !important;
+  margin-top :-4px !important;
+  box-sizing: border-box;
 }
 .selectedValueBox input.first{
-  margin-top: -1px !important;
+  margin-top: -2px !important;
 }
 .selectedValueBox input:nth-child(3) {
-  margin-right: 12px;
+  margin-right: 24px;
 }
 .selectedValueBox .line {
   display: inline-block;
-  width: 1px;
-  height: 22px;
+  width: 1PX;
+  height: 44px;
   background: #ccc;
   vertical-align: middle;
   position: absolute;
-  left: 63px;
-  top: 12px;
+  left: 126px;
+  top: 24px;
 }
 .buttonBox {
   margin-top: 42px;
@@ -210,7 +212,7 @@
 }
 .line {
   position: absolute;
-  right: 109px;
+  right: 104px;
   top: 0px;
   background: #ccc;
   width: 1px;
@@ -241,3 +243,62 @@
   .ptc
     margin-top:30%
     position:relative
+.carcolor
+  position: absolute
+  left:160px
+  font-size:28px
+  width: 80%
+.list-box{
+    padding: 30px 0
+}
+
+.list-box .ul{
+    display: -webkit-box;
+    display: -ms-flexbox;
+    display: flex;
+    width: 83%;
+    -webkit-box-pack: justify;
+    -ms-flex-pack: justify;
+    justify-content: space-between;
+    margin: 0 auto
+}
+
+.list-box .ul .li{
+    -webkit-box-flex: 0;
+    -ms-flex: 0 0 42%;
+    flex: 0 0 42%;
+    position: relative
+}
+
+.list-box .ul .li .img-box{
+    width: 270px;
+    height: 270px;
+    margin: 0 auto;
+    overflow: hidden;
+    border-radius: 6px;
+    border: 1PX solid #ddd
+}
+
+.list-box .ul .li .img-box .img{
+    width: 100%;
+    height: 100%
+}
+
+.list-box .ul .li .desc{
+    width: 100%;
+    text-align: center;
+    margin-top: 22px;
+    font-size: 28px
+}
+
+.list-box .ul .li .input{
+    opacity: 0
+}
+
+.list-box .ul .li .inputBox,.list-box .ul .li .input{
+    position: absolute;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 270px
+}

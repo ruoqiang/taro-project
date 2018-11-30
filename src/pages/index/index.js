@@ -42,6 +42,7 @@ export default class Index extends Component {
     })
   }
   goToNext(url) {
+    Taro.showLoading({title: '加载中...'})
     this.props.getUserBaseInfo(function(){ /* eslint-disable-line */
       Taro.navigateTo({url: url})
     })

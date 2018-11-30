@@ -14,6 +14,8 @@ class App extends Component {
 
   config = {
     pages: [
+      // 'pages/user-upload/user-upload',
+      'pages/user-add-address/user-add-address',
       'pages/index/index',
       'pages/record-car/record-car',
       'pages/select-car/select-car',

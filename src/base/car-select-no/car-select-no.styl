@@ -1,0 +1,75 @@
+@import '../../common/styl/variable'
+
+.car-select-no-box
+  background:rgba(0,0,0,.6)
+  opacity: 0;
+  height:100%;
+  transition: all 0.5s
+  overflow:hidden
+  position:fixed
+  top:0
+  left:0
+  bottom:0
+  right:0
+  &.fadeIn
+    opacity: 1;
+  .keyboard-list-box
+    transition: all .5s;
+    transform: translate3d(0px,243px,0);
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    background: #d1d5da;
+    &.fadeIn
+      transform: translate3d(0px,0px,0);
+  .keyboard-list
+    width: 100%;
+    max-width: 750px;
+    margin: 0 atuo
+    background: #d1d5da;
+    padding-bottom: 20px;
+    z-index: 9999;
+    .list-item
+      width: 96%;
+      margin: 10px auto 0;
+      display:flex
+      justify-content: space-between
+      .p-item
+        display: block;
+        width: 8.2%;
+        flex:0 0 8.2%;
+        height: 80px;
+        line-height: 80px;
+        background: #fff;
+        border-radius: 10px;
+        text-align: center;
+        font-size: 28px;
+        min-width:30px
+        &:active
+          background: $color-text-lll;
+          
+        &.p-item-null
+            pointer-events: none;
+            background: none;
+        &.p-item-close
+          min-width:80px
+          background:#acb4bf
+          color:#fff
+        &.font-confirm
+            width: 12%;
+            background: #ACB4BF;
+            text-align: center;
+            color: #fff;
+            font-size: 28px;
+            &:active
+              background: #fff;
+              color: #333;
+        &.delete
+            width: 12%;
+            background: #ACB4BF;
+            text-align: center;
+            color: #fff;
+            font-size: 28px;
+            &:active
+              background: #fff;
+              color: #333;

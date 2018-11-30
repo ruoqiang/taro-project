@@ -1,9 +1,10 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Input, ScrollView, Text } from '@tarojs/components'
+import { View, Input, ScrollView, Text, Picker } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import * as HTTP from '../../common/js/http'
 import { showTips } from '../../common/js/util'
 import HeadStep from '../../base/head-step/head-step'
+import CarSelectNo from '../../base/car-select-no/car-select-no'
 import '../user-baseinfo/userInfo.styl'
 import '../login/login.styl' //微信端样式不能复用login中的样式，需要再次引用一次
 
@@ -23,6 +24,9 @@ export default class userCarInfo extends Component{
     constructor(props) {
         super(props)
         this.state = {
+            selector: ['蓝牌','黄牌','黑牌','白牌'],
+            selectorChecked: '蓝牌',
+            CarColorType: 0,
             carno: ['沪','A','B'],
             defaultcarValue: ['杭','A'],
             btnDisable: false
@@ -36,58 +40,55 @@ export default class userCarInfo extends Component{
             this.isSelf = this.newApply['IsOwnerApply'] || true
             this.sex = this.newApply['Sex'] || '1'
             this.setState({isSelf: this.isSelf}) // 用来辅助更新view的
+            this.setState({selectorChecked: this.newApply['CarColor']})
+            // this.setState({CarColorType: Number(this.newApply['CarColorType'])})
             this.forms = this.newApply
+            this.setState({
+                carno:( this.newApply && this.newApply.CarNum &&(this.newApply.CarNum).split('')) || ['沪','A','B']
+            })
         }
     }
+    onChange = e => {
+        this.setState({
+          selectorChecked: this.state.selector[e.detail.value]
+        })
+        this.setState({
+            CarColorType:e.detail.value
+          })
+        console.log(e);
+      }
     handleInputChange(keywords, e) {
         this.forms[keywords] = e.target.value
     }
     submitInfo () {
         let param = {
-            Name: this.forms.Name || '',
-            IDNumber: this.forms.IDNumber || '',
-            Phone: this.forms.Phone || '',
-            Inviter: this.forms.Inviter || '',
-            CarOwnerName: this.forms.CarOwnerName || '',
-            CarOwnerIDNum: this.forms.CarOwnerIDNum || '',
-            CarOwnerPhone: this.forms.CarOwnerPhone || '',
-            isSelf :this.isSelf,
-            Sex: this.sex
+            CarColor:  this.state.selectorChecked.slice(0, 1), //'蓝', //this.info.carColor.slice(0, 1), //只取第一个文字
+            CarColorType:  this.state.CarColorType, //this.forms.CarColorType,
+            CarNum: (this.state.carno).join(''),
+            EngineNum: this.forms.EngineNum || '',
+            CarVin: this.forms.CarVin || '',
+            CarBrand: this.forms.CarBrand || '',
+            CarLoad: this.forms.CarLoad || '',
         }
-        if (param.Name === '') {
-            return showTips('请输入姓名')
-          }
-          if (param.IDNumber === '') {
-            return showTips('请输入身份证号码')
-          }
-          var iDNumberReg = /(^\d{18}$)|(^\d{17}(\d|X|x)$)/
-          if (!iDNumberReg.test(param.IDNumber)) {
-            return showTips('请输入正确格式的身份证号码')
-          }
-          if (param.Phone === '') {
-            return showTips('请输入手机号码')
-          }
-          if (!/1[3|4|5|7|8]\d{9}/.test(param.Phone)) {
-            return showTips('请输入正确手机号码')
-          }
-        if (!param.isSelf) {
-            if (!param.CarOwnerName) {
-                return showTips('请输入车主姓名')
-            }
-            if (!param.CarOwnerIDNum) {
-                return showTips('请输入车主身份证号')
-            }
-            if (!iDNumberReg.test(param.CarOwnerIDNum)) {
-                return showTips('请输入正确格式的身份证号码')
-            }
-            if (!param.CarOwnerPhone) {
-                return showTips('请输入车主手机号')
-            }
+        
+        if (param.EngineNum === '') {
+            return showTips('发动机号')
+        }
+        if (param.CarVin === '') {
+            return showTips('车辆识别代码')
+        }
+        
+        if (param.CarBrand === '') {
+            return showTips('车辆品牌')
+        }
+        if (param.CarLoad === '') {
+            return showTips('核定载重')
         }
         let params = {
-            Step: 1,
+            Step: 2,
             CCustomerApply: param
         }
+        debugger
         this.setState({btnDisable: true})
         let that = this
         Taro.showLoading({ title: '提交中..' })
@@ -95,7 +96,7 @@ export default class userCarInfo extends Component{
             this.setState({btnDisable: false})
             // 成功后
             that.props.getUserBaseInfo()
-            Taro.navigateBack({url: '/pages/user-carinfo/user-carinfo'})
+            Taro.navigateTo({url: '/pages/user-upload/user-upload'})
         }).catch(()=> {
             this.setState({btnDisable: false})
         })
@@ -108,6 +109,12 @@ export default class userCarInfo extends Component{
         this.sex = val
         this.setState({sex: val}) // 用来辅助更新view的
     }
+    selectCarNoShow () {
+        this.refs.selectCarNo.show()
+    }
+    selectedCarValue(val) { //选择车牌号
+        this.setState({carno: val})
+      }
     render() {
         return (
             <View id='user-baseinfo'>
@@ -119,11 +126,32 @@ export default class userCarInfo extends Component{
                             </View>
                             <View className='form-list'>
                                 <Text className='label'>车牌颜色</Text> 
-                                <Input type='text' className='input' placeholder='请输入车牌颜色'  maxLength='13' value={this.newApply && this.newApply['CarColor']} />
+                                {/* <Input type='text' className='input' placeholder='请输入车牌颜色'  maxLength='13' value={this.newApply && this.newApply['CarColor']} /> */}
+                                <Picker className='carcolor' range={this.state.selector} value={this.newApply && this.newApply['CarColorType']} onChange={this.onChange}> <View className='picker'>
+                                    {this.state.selectorChecked}
+                                </View></Picker>
                             </View>
-                            <View className='form-list'>
+                            <View className='form-list' onClick={this.selectCarNoShow.bind(this)}>
                                 <Text className='label'>车牌号</Text> 
-                                <Input type='text' className='input' placeholder='车牌号'  maxLength='13' value={this.newApply && this.newApply['CarNum']} />
+                                <View className='selectedValueBox'>
+                                    <Text className='line'></Text>
+                                    <Input type='text' placeholder='' readOnly='' />
+
+                                    <Input type='text' placeholder='' readOnly='' />
+                                    <Input type='text' placeholder='' readOnly='' />
+                                    <Input type='text' placeholder='' readOnly='' />
+                                    <Input type='text' placeholder='' readOnly='' />
+                                    <Input type='text' placeholder='' readOnly='' />
+                                    <Input type='text' placeholder='' readOnly='' />
+                                    </View>
+                                    <View className='selected-car-box'  onClick={this.carSelectNoShow}>
+                                    <Text className='line'></Text>
+                                        {
+                                            this.state.carno && this.state.carno.map((item,index)=> {
+                                                return (<Input type='text' readOnly='' value={item}  key={index} />)
+                                            })
+                                        }
+                                    </View>
                             </View>
                             
                             <View className='form-list'>
@@ -131,20 +159,18 @@ export default class userCarInfo extends Component{
                                 <Input type='text' className='input' placeholder='请输入发动机号'  maxLength='13'  value={this.newApply && this.newApply['EngineNum']}  onChange={this.handleInputChange.bind(this,'EngineNum')} />
                             </View>
                             <View className='form-list'>
+                                <Text className='label'>车辆识别代码</Text> 
+                                <Input type='text' className='input' placeholder='请输入车辆识别代码'  maxLength='13'  value={this.newApply && this.newApply['CarVin']}  onChange={this.handleInputChange.bind(this,'EngineNum')} />
+                            </View>
+                            <View className='form-list'>
                                 <Text className='label'>车辆品牌</Text> 
-                                <Input type='text' className='input' placeholder='请输入车辆品牌'  maxLength='18' value={this.newApply && this.newApply['CarBrand']} onChange={this.handleInputChange.bind(this,'CarVin')} />
+                                <Input type='text' className='input' placeholder='请输入车辆品牌'  maxLength='18' value={this.newApply && this.newApply['CarBrand']} onChange={this.handleInputChange.bind(this,'CarBrand')} />
                             </View>
                             <View className='form-list'>
                                 <Text className='label'>核定载重</Text> 
-                                <Input type='text' className='input' placeholder='请输入核定载重'  maxLength='11' value={this.newApply && this.newApply['CarLoad']} onChange={this.handleInputChange.bind(this,'Phone')} />
+                                <Input type='text' className='input' placeholder='请输入核定载重'  maxLength='11' value={this.newApply && this.newApply['CarLoad']} onChange={this.handleInputChange.bind(this,'CarLoad')} />
                             </View> 
                         </View>
-                        <View className='form-list'>
-                                <Text className='label'>性别</Text>
-                                    <View className='sex-box'>
-                                        <View className={this.sex=== '1' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'1')}></View><View className='b'>是</View> <View className={this.sex=== '0' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'0')}></View><View  className='b'>否</View>
-                                    </View>
-                            </View>
                         <View className='buttonBox'>
                             <View className={'button ' + (this.state.btnDisable ? 'disable': '')} onClick={this.submitInfo.bind(this)}>
                                  下一步
@@ -153,6 +179,8 @@ export default class userCarInfo extends Component{
                         <View style={{height: '40px'}}>
                         </View>
             </ScrollView>
+            <CarSelectNo ref='selectCarNo' defaultValue={this.state.carno} onSelectedCarValue={this.selectedCarValue.bind(this)}></CarSelectNo>
+
             </View>
         )
     } 
