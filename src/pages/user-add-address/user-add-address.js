@@ -33,7 +33,7 @@ export default class userCarInfo extends Component{
             btnDisable: false
         }
         this.forms = {}
-        this.selectedIndex = [1,1]
+        this.selectedIndex = [1,1,1]
     }
     componentDidShow() {
         this.newApply = this.props.counter.userApplyStepList && this.props.counter.userApplyStepList.apply
@@ -42,16 +42,32 @@ export default class userCarInfo extends Component{
             this.defaultArea = (this.address && (`${this.address['Province']} ${this.address['City']} ${this.address['Town']}`)) || ''
             this.setState({defaultArea: this.defaultArea}) // 用来辅助更新view的
         }
-        this.initCreateArea('广东','深圳')
+        // this.initCreateArea('广东','深圳')
+        this.initCreateArea(this.address['Province'],this.address['City'],this.address['Town'])
+        // this.selectedIndex = this.getSelectIndex(this.defaultArea)
+        
     }
-    initCreateArea(city,district) {
+    initCreateArea(province,city,district) {
         this.provinces = this.createProvinces()
-        this.citys = this.createCitys(city)
-        this.districts = this.createDistricts(district)
+        this.citys = this.createCitys(province)
+        this.districts = this.createDistricts(city)
         this.setState({provinces: this.provinces})
         this.setState({citys: this.citys})
         this.setState({districts: this.districts})
+        //根据名称获取选择的索引
+        let provinceIndex = this.getSelectIndex(province,this.provinces)
+        let cityIndex = this.getSelectIndex(city,this.citys)
+        let districtIndex = this.getSelectIndex(district,this.districts)
+        this.selectedIndex = [provinceIndex,cityIndex,districtIndex]
+
         this.setState({selectedIndex: this.selectedIndex})
+    }
+    getSelectIndex(name,arr){
+        let idx = 0
+         arr.forEach((item,index)=>{
+            if(name === item.name) idx = index
+        })
+        return idx
     }
     createProvinces() {
         let arr = []
@@ -82,11 +98,17 @@ export default class userCarInfo extends Component{
         })
         return arr
     }
-    onChange = e => {
-        console.log('onChange', e);
+    onPickOk(e) {
+        // console.log('onChange', e.detail.value);
+        let selectedIndex = e.detail.value
+        this.setState({selectedIndex:this.selectedIndex})
+
+        let province = this.provinces[selectedIndex[0]]
+        let city = this.citys[selectedIndex[1]]
+        let district = this.districts[selectedIndex[2]]
+        this.defaultArea = `${province&&province.name} ${city&&city.name || ''} ${district&&district.name || ''}`
       }
     onColumnchange(e) {
-        console.log('onColumnchange:',e);
         let column = e.detail.column
         let curProvinceName = null
         let curCityName = null
@@ -181,7 +203,7 @@ export default class userCarInfo extends Component{
                                 {/* rangeKey='name' onColumnchange={this.onColumnchange.bind(this)} */}
                                 {
                                     this.state.provinces.length>0&& (
-                                        <Picker className='carcolor' mode='multiSelector' rangeKey='name' value={[1,1,3]} range={[this.state.provinces,this.state.citys,this.state.districts]}  onColumnchange={this.onColumnchange.bind(this)}>  <View className='picker'>
+                                        <Picker className='carcolor' mode='multiSelector' rangeKey='name' value={this.selectedIndex} range={[this.state.provinces,this.state.citys,this.state.districts]}  onColumnchange={this.onColumnchange.bind(this)} onChange={this.onPickOk.bind(this)}>  <View className='picker'>
                                         {this.defaultArea}
                                     </View>
                                     </Picker>
