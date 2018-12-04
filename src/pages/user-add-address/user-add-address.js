@@ -40,6 +40,9 @@ export default class userCarInfo extends Component{
         this.address = this.props.counter.userApplyStepList && this.props.counter.userApplyStepList.address
         if (this.address) {
             this.defaultArea = (this.address && (`${this.address['Province']} ${this.address['City']} ${this.address['Town']}`)) || ''
+            this.forms['ConName'] = this.address.ConName
+            this.forms['ConPhone'] = this.address.ConPhone
+            this.forms['DetailAddress'] = this.address.DetailAddress
             this.setState({defaultArea: this.defaultArea}) // 用来辅助更新view的
         }
         // this.initCreateArea('广东','深圳')
@@ -47,7 +50,7 @@ export default class userCarInfo extends Component{
         // this.selectedIndex = this.getSelectIndex(this.defaultArea)
         
     }
-    initCreateArea(province,city,district) {
+    initCreateArea(province, city, district) {
         this.provinces = this.createProvinces()
         this.citys = this.createCitys(province)
         this.districts = this.createDistricts(city)
@@ -62,7 +65,7 @@ export default class userCarInfo extends Component{
 
         this.setState({selectedIndex: this.selectedIndex})
     }
-    getSelectIndex(name,arr){
+    getSelectIndex(name, arr){
         let idx = 0
          arr.forEach((item,index)=>{
             if(name === item.name) idx = index
@@ -99,7 +102,7 @@ export default class userCarInfo extends Component{
         return arr
     }
     onPickOk(e) {
-        // console.log('onChange', e.detail.value);
+        console.log('onChange', e.detail.value);
         let selectedIndex = e.detail.value
         this.setState({selectedIndex:this.selectedIndex})
 
@@ -132,34 +135,29 @@ export default class userCarInfo extends Component{
         this.forms[keywords] = e.target.value
     }
     submitInfo () {
+        
         let param = {
-            CarColor:  this.state.selectorChecked.slice(0, 1), //'蓝', //this.info.carColor.slice(0, 1), //只取第一个文字
-            CarColorType:  this.state.CarColorType, //this.forms.CarColorType,
-            CarNum: (this.state.carno).join(''),
-            EngineNum: this.forms.EngineNum || '',
-            CarVin: this.forms.CarVin || '',
-            CarBrand: this.forms.CarBrand || '',
-            CarLoad: this.forms.CarLoad || '',
+                ConName: this.forms.ConName || '',
+                ConPhone: this.forms.ConPhone || '',
+                AllAddress: this.defaultArea,
+                DetailAddress: this.forms.DetailAddress || ''
+             }
+        if (!param.ConName) {
+            return showTips('请输入收货人')
         }
-        
-        if (param.EngineNum === '') {
-            return showTips('发动机号')
+        if (!param.ConPhone) {
+            return showTips('请输入手机号')
         }
-        if (param.CarVin === '') {
-            return showTips('车辆识别代码')
-        }
-        
-        if (param.CarBrand === '') {
-            return showTips('车辆品牌')
-        }
-        if (param.CarLoad === '') {
-            return showTips('核定载重')
+        if (!/1[3|4|5|7|8]\d{9}/.test(param.ConPhone)) {
+            return showTips('请输入正确手机号码')
+          }
+        if (!param.DetailAddress) {
+            return showTips('请输入详细地址')
         }
         let params = {
-            Step: 2,
+            Step: 4,
             CCustomerApply: param
         }
-        debugger
         this.setState({btnDisable: true})
         let that = this
         Taro.showLoading({ title: '提交中..' })
@@ -192,11 +190,11 @@ export default class userCarInfo extends Component{
                             
                             <View className='form-list'>
                                 <Text className='label'>收货人</Text> 
-                                <Input type='text' className='input' placeholder='请输入收货人'  maxLength='13'  value={this.address && this.address['ConName']}  onChange={this.handleInputChange.bind(this,'ConName')} />
+                                <Input type='text' className='input' placeholder='请输入收货人'  maxLength='20'  value={this.address && this.address['ConName']}  onChange={this.handleInputChange.bind(this,'ConName')} />
                             </View>
                             <View className='form-list'>
                                 <Text className='label'>手机号</Text> 
-                                <Input type='text' className='input' placeholder='请输入手机号'  maxLength='13'  value={this.address && this.address['ConPhone']}  onChange={this.handleInputChange.bind(this,'ConPhone')} />
+                                <Input type='tel' className='input' placeholder='请输入手机号'  maxLength='11'  value={this.address && this.address['ConPhone']}  onChange={this.handleInputChange.bind(this,'ConPhone')} />
                             </View>
                             <View className='form-list'>
                                 <Text className='label'>所在地区</Text> 
@@ -213,7 +211,7 @@ export default class userCarInfo extends Component{
                             </View>
                             <View className='form-list'>
                                 <Text className='label'>详细地址</Text> 
-                                <Input type='text' className='input' placeholder='请输入详细地址'  maxLength='11' value={this.address && this.address['DetailAddress']} onChange={this.handleInputChange.bind(this,'DetailAddress')} />
+                                <Input type='text' className='input' placeholder='请输入详细地址'  maxLength='20' value={this.address && this.address['DetailAddress']} onChange={this.handleInputChange.bind(this,'DetailAddress')} />
                             </View> 
                         </View>
                         <View className='buttonBox'>
