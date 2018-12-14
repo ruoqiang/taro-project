@@ -1,10 +1,13 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Input, ScrollView, Text, Picker,Image } from '@tarojs/components'
+import { View, Input, ScrollView, Text, Picker,Image,Canvas,Button } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 import * as HTTP from '../../common/js/http'
 import { showTips } from '../../common/js/util'
 import HeadStep from '../../base/head-step/head-step'
+import { url } from '../../common/js/config'
 import ImageUtil from './imgcomPress'
+import Exif from 'exif-js' //h5使用 读取图像的原始数据的功能扩展，例如：拍照方向、相机设备型号、拍摄时间、ISO 感光度、GPS 地理位置等数据
+import upng from 'upng-js' //微信端的图片转base64库
 
 import '../user-baseinfo/userInfo.styl'
 import '../login/login.styl' //微信端样式不能复用login中的样式，需要再次引用一次
@@ -25,9 +28,14 @@ export default class userCarInfo extends Component{
     constructor(props) {
         super(props)
         this.state = {
+            isSelf: true,
             btnDisable: false,
             destroyInput: false,
-            tipsText: ''
+            imgSrc: '',
+            tipsText: '',
+            canvasWidth:100,
+            canvasHeight:100,
+            isWeAPP: false
         }
        
         this.uploadImgSrc = [
@@ -42,33 +50,25 @@ export default class userCarInfo extends Component{
         this.isIos = true//ImageUtil.isIos
         this.btnDisable = false
         this.forms = {}
+        
     }
     componentDidShow() {
         // console.log('this', this.props.counter.userApplyStepList)
-        this.newApply = this.props.counter.userApplyStepList && this.props.counter.userApplyStepList.apply
-        if (this.newApply) {
-            this.isSelf = this.newApply['IsOwnerApply'] || true
-            this.sex = this.newApply['Sex'] || '1'
-            this.setState({isSelf: this.isSelf}) // 用来辅助更新view的
-            this.setState({selectorChecked: this.newApply['CarColor']})
-            // this.setState({CarColorType: Number(this.newApply['CarColorType'])})
-            this.forms = this.newApply
-            this.setState({
-                carno:( this.newApply && this.newApply.CarNum &&(this.newApply.CarNum).split('')) || ['沪','A','B']
+        this.props.getUserBaseInfo()
+        this.apply = this.props.counter.userApplyStepList && this.props.counter.userApplyStepList.apply
+        this.listphoto = this.props.counter.userApplyStepList && this.props.counter.userApplyStepList.listphoto
+        if (this.listphoto) {
+            this.listphoto.forEach((item)=> {
+                let oldTypeID = item.TypeID.toString()
+                let index = oldTypeID.substr(oldTypeID.length - 1, 1) -1 //index 的索引根据TypeID字段最后一个值来确定
+                this.uploadImgSrc[index]['src'] = url + item.Url
+                this.uploadImgSrc[index]['isUploaded'] = true
             })
+            this.setState({isSelf: false}) // 用来辅助更新view的
         }
-    }
-    onChange = e => {
-        this.setState({
-          selectorChecked: this.state.selector[e.detail.value]
-        })
-        this.setState({
-            CarColorType:e.detail.value
-          })
-        console.log(e);
-      }
-    handleInputChange(keywords, e) {
-        this.forms[keywords] = e.target.value
+        if(Taro.getEnv()==='WEAPP') {
+            this.setState({isWeAPP:true})
+        }  
     }
     submitInfo () {
         let param = {
@@ -98,7 +98,6 @@ export default class userCarInfo extends Component{
             Step: 2,
             CCustomerApply: param
         }
-        debugger
         this.setState({btnDisable: true})
         let that = this
         Taro.showLoading({ title: '提交中..' })
@@ -111,23 +110,238 @@ export default class userCarInfo extends Component{
             this.setState({btnDisable: false})
         })
     }
-    switchSelf(val) {
-        this.isSelf = val
-        this.setState({isSelf: val}) //只有prop或者state变化了view才会更新，因此我们加了一个触发页面更新的字段isSelf在state中，
+    inputChange(index) {
+        if(Taro.getEnv() !== 'WEB') {
+            this.wxChooseImage(index)
+        } else {
+            this.webChooseImagee(index.target)
+        } 
     }
-    switchSex (val) {
-        this.sex = val
-        this.setState({sex: val}) // 用来辅助更新view的
-    }
-    selectCarNoShow () {
-        this.refs.selectCarNo.show()
-    }
-    selectedCarValue(val) { //选择车牌号
-        this.setState({carno: val})
+    webChooseImagee(obj) {
+        var that = this
+        //ios 修复下不能多次选择同一张图片
+        this.destroyInput = true
+        this.setState({destroyInput: true}) //触发view渲染
+        setTimeout(() => {
+          this.destroyInput = false
+          this.setState({destroyInput: false})
+        }, 20)
+        var f = obj.files[0]
+        var fileType = f.type
+        var fileSize = f.size
+        if (['image/jpg', 'image/jpeg', 'image/png', 'image/gif'].indexOf(fileType) < 0) {
+          alert('请上传图片')
+          return false
+        }
+        if (fileSize > 10 * 1024 * 1024) {
+          alert('请上传不超过10M的图片')
+          return false
+        }
+        var index = obj.id
+        //loading载图片
+        that.uploadImgSrc[index]['src'] = require('./loading.gif')
+        var result = null
+        // let t = this
+        Exif.getData(f, function() {
+          //获取图片的拍摄方向的数据
+          that.Orientation = Exif.getTag(f, 'Orientation')
+         
+        })
+        var reader = new FileReader()
+        reader.readAsDataURL(f)
+        
+        reader.onload = function(e) {
+          var quality = 0.8
+          if (f.size > 1024 * 500) { //若图片大小大于0.5M，压缩比例重新设置 1M=1024*1024
+            quality = 0.5
+          }
+           result = e.target.result //返回的dataURL
+          //修正图片方向
+          that.ImageCompress(result, that.Orientation, quality, function(data) {
+            var img = document.createElement('img') //new Image()
+            img.onload = function() {
+              // oShowImg.src = data
+              // console.log('data____', data)
+              // var FileBase64 = cvs.toDataURL('image/jpeg', 0.5)
+              that.begainUpload(data, index)
+           }
+            img.src = data
+           // console.log(img.src);
+          })
+        }
+      }
+      /**
+       * h5端图片压缩
+       * @param {*} img 
+       * @param {*} dir 
+       * @param {*} quality 
+       * @param {*} next 
+       */
+      ImageCompress(img, dir, quality, next) {
+        var image =  document.createElement('img')//document.getElementById('canvasImage')//new Image()
+        image.src = img
+
+        this.ImageInfo = Exif.getAllTags(img)
+        image.onload = function() {
+          var degree = 0,
+            drawWidth, drawHeight, width, height
+          //原始宽高
+          drawWidth =  this.naturalWidth
+          drawHeight =  this.naturalHeight
+          //以下改变一下图片大小
+          var maxSide = Math.max(drawWidth, drawHeight)
+          if (maxSide > 1024) {
+            var minSide = Math.min(drawWidth, drawHeight)
+            minSide = minSide / maxSide * 1024
+            maxSide = 1024
+            if (drawWidth > drawHeight) {
+              drawWidth = maxSide
+              drawHeight = minSide
+            } else {
+              drawWidth = minSide
+              drawHeight = maxSide
+            }
+          }
+          //使用canvas修正图片的方向
+        //   let canvas = Taro.createCanvasContext('mycanvas')
+          var canvas = document.getElementById('canvas')
+          canvas.width = width = drawWidth
+          canvas.height = height = drawHeight
+          var context = canvas.getContext('2d')
+          //判断图片方向，重置canvas大小，确定旋转角度，iphone默认的是home键在右方的横屏拍摄方式
+          if (dir && dir !== '' && dir !== 1) {
+            switch (dir) {
+              //iphone横屏拍摄，此时home键在左侧
+              case 3:
+                degree = 180
+                drawWidth = -width
+                drawHeight = -height
+                break
+                //iphone竖屏拍摄，此时home键在下方(正常拿手机的方向)
+              case 6:
+                canvas.width = height
+                canvas.height = width
+                degree = 90
+                drawWidth = width
+                drawHeight = -height
+                break
+                //iphone竖屏拍摄，此时home键在上方
+              case 8:
+                canvas.width = height
+                canvas.height = width
+                degree = 270
+                drawWidth = -width
+                drawHeight = height
+                break 
+            }
+          }
+          //使用canvas旋转校正
+          context.rotate(degree * Math.PI / 180)
+          context.drawImage(image, 0, 0, drawWidth, drawHeight)
+        //   context.draw()
+          //返回校正图片
+          next(canvas.toDataURL('image/jpeg', quality || 0.8))
+       }
+        // image.src = img
+        this.setState({imgSrc: img})
+      }
+    wxChooseImage(ImgeIdx) {
+        const self = this
+        Taro.chooseImage({
+            count: 1,
+            sizeType: ['original', 'compressed'],
+            sourceType: ['album', 'camera'],
+            success (res) {
+                // tempFilePath可以作为img标签的src属性显示图片
+                const tempFilePaths = res.tempFilePaths
+                //获取图片信息eg.宽高
+                Taro.getImageInfo({ 
+                    src:tempFilePaths[0]
+                }).then((resss)=>{
+                    //动态设置canvas标签的宽高
+                    
+                    let resWidth = resss.width
+                    let resHeight = resss.height
+                    let scale = resWidth / resHeight
+                    let limitWidth = 400 //最多宽度超过该值就做限制
+                    if (resWidth > limitWidth) {
+                        resWidth = limitWidth
+                        resHeight = resWidth / scale
+                    }
+                    self.setState({canvasWidth:resWidth})
+                    self.setState({canvasHeight:resHeight})
+
+                    let canvas = Taro.createCanvasContext('mycanvas')
+                    canvas.drawImage(tempFilePaths[0], 0, 0, resWidth, resHeight)
+                    // var index = ImgeIdx
+                    //loading载图片
+                    self.uploadImgSrc[ImgeIdx]['src'] = require('./loading.gif')
+                        // 1. 绘制图片至canvas
+                        // canvas.draw() //drawImage后必须调用draw()后才能把信息显示在canvas上
+                        canvas.draw(false, () => {
+                            Taro.canvasGetImageData({
+                                canvasId: 'mycanvas',
+                                x: 0,
+                                y: 0,
+                                width: resWidth,
+                                height: resHeight,
+                                success(image) {
+                                    // 3. png编码
+                                    let pngData = upng.encode([image.data.buffer], resWidth, resHeight)
+                                    // 4. base64编码
+                                    let base64 = Taro.arrayBufferToBase64(pngData)
+                                    // Taro.arrayBufferToBase64
+                                    // console.log(base64);
+                                    self.uploadImgSrc[ImgeIdx]['src'] ='data:image/png;base64,'+ base64
+                                    // self.setState({imgSrc:'data:image/png;base64,'+ base64}) //1.辅助更新view 2.方便看图片有没有更新
+
+                                    self.begainUpload('data:image/png;base64,'+ base64, ImgeIdx)
+                                    // self.props.getUserBaseInfo()
+                                },
+                                fail(error) {
+                                    console.error(error)
+                                }
+                            })
+                        })    
+                    })
+
+              }
+            })
+      }
+    
+    begainUpload(FileBase64, index) { //
+        var that = this
+        var needData = {
+          IDfication: that.uploadImgSrc[index]['IDfication'],
+          TypeID: that.uploadImgSrc[index]['TypeID'],
+          Relation: that.apply['Relation'],
+          FileBase64: FileBase64
+        }
+        HTTP.post('SubInfo/SubPhoto', needData).then((res)=> {
+            this.setState({btnDisable: false})
+            // 成功后
+            that.uploadImgSrc[index]['src'] = url + res.result.Url
+            that.uploadImgSrc[index]['isUploaded'] = true
+            that.props.getUserBaseInfo() 
+            that.btnDisable = false
+
+        }).catch(()=> {
+            this.setState({btnDisable: false})
+            that.uploadImgSrc[index]['src'] = require('./fail.png')
+            that.uploadImgSrc[index]['isUploaded'] = false
+            that.btnDisable = false
+        })
       }
     render() {
         return (
             <View id='user-baseinfo'>
+            {/* <Image src={this.state.imgSrc} id='canvasImage'></Image> */}
+            {/* <canvas canvas-id='mycanvas' style='width:20px; height: 20px;'></canvas> */}
+            {/* <Canvas style={{width:this.state.canvasWidth+ 'px', height: this.state.canvasHeight+ 'px'}} canvasId='mycanvas' /> */}
+            <View style='width: 0px; height: 0px;overflow:hidden;z-index:-1;position:absolute;left:0px;visibility: hidden;'> 
+              <Canvas style={{width:this.state.canvasWidth+ 'px', height: this.state.canvasHeight+ 'px'}} canvasId='mycanvas' />
+            </View>
+            <canvas id='canvas' style='display: none'></canvas>
                 <ScrollView ref={this.scroll}>
                     <HeadStep step={3}></HeadStep>
                         <View className='form-box'>
@@ -136,16 +350,22 @@ export default class userCarInfo extends Component{
                             </View>
                             <View className='list-box'>
                             <View className='ul'>
-                                <View className='li'>
+                                <View className='li' >
                                     <View className='img-box'>
                                         <Image className='img' src={this.uploadImgSrc[0]['src']} alt='' />
                                     </View> 
                                     <View className='desc'>{this.uploadImgSrc[0]['IDfication']}</View>
-                                    {this.isIos && !this.destroyInput ? (
-                                        <Input className='input' type='file'  onChange={this.inputChange} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+
+                                    {/* {!this.state.isWeAPP&&this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    
                                     ): null}
-                                     {!this.isIos && !this.destroyInput ? (
-                                        <Input className='input' type='file'  onChange={this.inputChange} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                     {!this.state.isWeAPP&&!this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null} */}
+                                    {this.state.isWeAPP ? (
+                                         <Button className='input' plain type='primary' onClick={this.inputChange.bind(this,0)} id='0'>按钮</Button>
                                     ): null}
                                 </View>
                                 <View className='li'>
@@ -153,7 +373,15 @@ export default class userCarInfo extends Component{
                                         <Image className='img' src={this.uploadImgSrc[1]['src']} alt='' />
                                     </View>
                                     <View className='desc'>{this.uploadImgSrc[1]['IDfication']}</View> 
-                                    <Input className='input' type='file'  onChange={this.inputChange} text='请选择图片' id='1' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    {!this.state.isWeAPP&&this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='1' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                     {!this.state.isWeAPP&&!this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='1' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                    {this.state.isWeAPP ? (
+                                         <Button className='input' plain type='primary' onClick={this.inputChange.bind(this,1)}>按钮</Button>
+                                    ): null}
                                 </View>
                             </View>
                         </View>
@@ -170,11 +398,14 @@ export default class userCarInfo extends Component{
                                         <Image className='img' src={this.uploadImgSrc[2]['src']} alt='' />
                                     </View> 
                                     <View className='desc'>{this.uploadImgSrc[2]['IDfication']}</View>
-                                    {this.isIos && !this.destroyInput ? (
-                                        <Input className='input' type='file'  onChange={this.inputChange} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    {!this.state.isWeAPP&&this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='2' accept='image/jpg,image/jpeg,image/png,image/gif' />
                                     ): null}
-                                     {!this.isIos && !this.destroyInput ? (
-                                        <Input className='input' type='file'  onChange={this.inputChange} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                     {!this.state.isWeAPP&&!this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='2' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                    {this.state.isWeAPP ? (
+                                         <Button className='input' plain type='primary' onClick={this.inputChange.bind(this,2)}>按钮</Button>
                                     ): null}
                                 </View>
                                 <View className='li'>
@@ -182,7 +413,15 @@ export default class userCarInfo extends Component{
                                         <Image className='img' src={this.uploadImgSrc[3]['src']} alt='' />
                                     </View>
                                     <View className='desc'>{this.uploadImgSrc[3]['IDfication']}</View> 
-                                    <Input className='input' type='file'  onChange={this.inputChange} text='请选择图片' id='1' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    {!this.state.isWeAPP&&this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='3' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                     {!this.state.isWeAPP&&!this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='3' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                    {this.state.isWeAPP ? (
+                                         <Button className='input' plain type='primary' onClick={this.inputChange.bind(this,3)}>按钮</Button>
+                                    ): null}
                                 </View>
                             </View>
                         </View>
@@ -198,12 +437,15 @@ export default class userCarInfo extends Component{
                                     <View className='img-box'>
                                         <Image className='img' src={this.uploadImgSrc[4]['src']} alt='' />
                                     </View> 
-                                    <View className='desc'>{this.uploadImgSrc[4]['IDfication']}</View>
-                                    {this.isIos && !this.destroyInput ? (
-                                        <Input className='input' type='file'  onChange={this.inputChange} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    <View className='desc' onClick={this.inputChange.bind(this)}>{this.uploadImgSrc[4]['IDfication']}</View>
+                                    {!this.state.isWeAPP&&this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='4' accept='image/jpg,image/jpeg,image/png,image/gif' />
                                     ): null}
-                                     {!this.isIos && !this.destroyInput ? (
-                                        <Input className='input' type='file'  onChange={this.inputChange} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                     {!this.state.isWeAPP&&!this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='4' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                    {this.state.isWeAPP ? (
+                                         <Button className='input' plain type='primary' onClick={this.inputChange.bind(this,4)}>按钮</Button>
                                     ): null}
                                 </View>
                                 <View className='li'>
@@ -211,7 +453,15 @@ export default class userCarInfo extends Component{
                                         <Image className='img' src={this.uploadImgSrc[5]['src']} alt='' />
                                     </View>
                                     <View className='desc'>{this.uploadImgSrc[5]['IDfication']}</View> 
-                                    <Input className='input' type='file'  onChange={this.inputChange} text='请选择图片' id='1' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    {!this.state.isWeAPP&&this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='5' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                     {!this.state.isWeAPP&&!this.isIos && !this.destroyInput ? (
+                                        <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='5' accept='image/jpg,image/jpeg,image/png,image/gif' />
+                                    ): null}
+                                    {this.state.isWeAPP ? (
+                                         <Button className='input' plain type='primary' onClick={this.inputChange.bind(this,5)}>按钮</Button>
+                                    ): null}
                                 </View>
                             </View>
                         </View>

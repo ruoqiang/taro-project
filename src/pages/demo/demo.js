@@ -1,6 +1,6 @@
 import Taro, { Component } from '@tarojs/taro'
 
-import { View, ScrollView} from '@tarojs/components'
+import { View, ScrollView,Input} from '@tarojs/components'
 import './demo.styl'
 
 let data = Array(20).fill({consumeMoney: '100',inStation: '2018-02-14:12:21',inTime: '2018-02-14:12:21',inStation: '2018-02-14:12:21',outStation: '2018-02-14:12:21'})
@@ -11,13 +11,32 @@ export default class Demo extends Component{
             recordList: data,
         }
     }
+    componentDidMount() {
+        // this.slectedImg()
+    }
+    inputChange(e) {
+        this.slectedImg(e.target)
+    }
+    slectedImg(obj) {
+       
+        var f = obj.files[0]
+        var reader = new FileReader()
+        reader.readAsDataURL(f)
+        reader.onload = function(e) {
+            console.log(e);
+            debugger
+        }
+    }
     onScrollToLower() {
         console.log('onScrollToLower')
     }
+
     render() {
         return (
             <View className='record-car'>
-            <View className='record-img'></View>
+            <View className='record-img'>
+            <Input className='input' type='file' onChange={this.inputChange.bind(this)} id='0' accept='image/jpg,image/jpeg,image/png,image/gif' />
+            </View>
             <View className='record-list-box-wrap' ref={this.recordListBoxWrap} style={{height: '300px'}}>
                 <ScrollView className='ScrollView' scrollY onScrollToLower={this.onScrollToLower.bind(this)} lowerThreshold={20}>
                 {this.state.recordList.map((item,index)=> {

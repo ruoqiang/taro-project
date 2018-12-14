@@ -88,7 +88,6 @@ export default class userCarInfo extends Component{
             Step: 2,
             CCustomerApply: param
         }
-        debugger
         this.setState({btnDisable: true})
         let that = this
         Taro.showLoading({ title: '提交中..' })

@@ -14,9 +14,11 @@ class App extends Component {
 
   config = {
     pages: [
-      // 'pages/user-upload/user-upload',
-      'pages/user-add-address/user-add-address',
+      // 'pages/demo/demo',
       'pages/index/index',
+      'pages/user-upload/user-upload',
+      'pages/user-add-address/user-add-address',
+      
       'pages/record-car/record-car',
       'pages/select-car/select-car',
       'pages/login/login',
@@ -26,7 +28,6 @@ class App extends Component {
       'pages/user-carinfo/user-carinfo',
       'pages/application-record-list/application-record-list',
       'pages/bill/bill'
-      // 'pages/demo/demo'
     ],
     window: {
       backgroundTextStyle: 'light',
