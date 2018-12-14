@@ -25,7 +25,7 @@ taro小程序中 最好先build重新生成dist目录 然后再dev 解决意外�
     )}
 ```
 7. 选择的图片提交时转为base64格式字符串
-，参考[这里](https://github.com/zh8637688/wx-cardscanner,'参考示例')
+，参考[这里](https://github.com/zh8637688/wx-cardscanner)
 ```js
 import upng from 'upng-js'
 
