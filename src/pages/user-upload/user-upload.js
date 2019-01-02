@@ -70,46 +70,67 @@ export default class userCarInfo extends Component{
             this.setState({isWeAPP:true})
         }  
     }
-    submitInfo () {
-        let param = {
-            CarColor:  this.state.selectorChecked.slice(0, 1), //'蓝', //this.info.carColor.slice(0, 1), //只取第一个文字
-            CarColorType:  this.state.CarColorType, //this.forms.CarColorType,
-            CarNum: (this.state.carno).join(''),
-            EngineNum: this.forms.EngineNum || '',
-            CarVin: this.forms.CarVin || '',
-            CarBrand: this.forms.CarBrand || '',
-            CarLoad: this.forms.CarLoad || '',
-        }
+    // submitInfo () {
+    //     let param = {
+    //         CarColor:  this.state.selectorChecked.slice(0, 1), //'蓝', //this.info.carColor.slice(0, 1), //只取第一个文字
+    //         CarColorType:  this.state.CarColorType, //this.forms.CarColorType,
+    //         CarNum: (this.state.carno).join(''),
+    //         EngineNum: this.forms.EngineNum || '',
+    //         CarVin: this.forms.CarVin || '',
+    //         CarBrand: this.forms.CarBrand || '',
+    //         CarLoad: this.forms.CarLoad || '',
+    //     }
         
-        if (param.EngineNum === '') {
-            return showTips('发动机号')
-        }
-        if (param.CarVin === '') {
-            return showTips('车辆识别代码')
-        }
+    //     if (param.EngineNum === '') {
+    //         return showTips('发动机号')
+    //     }
+    //     if (param.CarVin === '') {
+    //         return showTips('车辆识别代码')
+    //     }
         
-        if (param.CarBrand === '') {
-            return showTips('车辆品牌')
+    //     if (param.CarBrand === '') {
+    //         return showTips('车辆品牌')
+    //     }
+    //     if (param.CarLoad === '') {
+    //         return showTips('核定载重')
+    //     }
+    //     let params = {
+    //         Step: 2,
+    //         CCustomerApply: param
+    //     }
+    //     this.setState({btnDisable: true})
+    //     let that = this
+    //     Taro.showLoading({ title: '提交中..' })
+    //     HTTP.post('SubInfo/UserAndCar', params).then(()=> {
+    //         this.setState({btnDisable: false})
+    //         // 成功后
+    //         that.props.getUserBaseInfo()
+    //         Taro.navigateBack({url: '/pages/user-carinfo/user-carinfo'})
+    //     }).catch(()=> {
+    //         this.setState({btnDisable: false})
+    //     })
+    // }
+    nextPage() {
+        if (!this.uploadImgSrc[0]['isUploaded']) {
+            return showTips(`请选择${this.uploadImgSrc[0]['IDfication']}`)
         }
-        if (param.CarLoad === '') {
-            return showTips('核定载重')
+        if (!this.uploadImgSrc[1]['isUploaded']) {
+            return showTips(`请选择${this.uploadImgSrc[1]['IDfication']}`)
         }
-        let params = {
-            Step: 2,
-            CCustomerApply: param
+        if (!this.uploadImgSrc[2]['isUploaded']) {
+            return showTips(`请选择${this.uploadImgSrc[2]['IDfication']}`)
         }
-        this.setState({btnDisable: true})
-        let that = this
-        Taro.showLoading({ title: '提交中..' })
-        HTTP.post('SubInfo/UserAndCar', params).then(()=> {
-            this.setState({btnDisable: false})
-            // 成功后
-            that.props.getUserBaseInfo()
-            Taro.navigateBack({url: '/pages/user-carinfo/user-carinfo'})
-        }).catch(()=> {
-            this.setState({btnDisable: false})
-        })
-    }
+        if (!this.uploadImgSrc[3]['isUploaded']) {
+            return showTips(`请选择${this.uploadImgSrc[3]['IDfication']}`)
+        }
+        if (!this.uploadImgSrc[4]['isUploaded']) {
+            return showTips(`请选择${this.uploadImgSrc[4]['IDfication']}`)
+        }
+        if (!this.uploadImgSrc[5]['isUploaded']) {
+            return showTips(`请选择${this.uploadImgSrc[5]['IDfication']}`)
+        }
+        Taro.navigateTo({url: '/pages/user-add-address/user-add-address'})
+      }
     inputChange(index) {
         if(Taro.getEnv() !== 'WEB') {
             this.wxChooseImage(index)
@@ -467,7 +488,7 @@ export default class userCarInfo extends Component{
                         </View>
                         </View>
                         <View className='buttonBox'>
-                            <View className={'button ' + (this.state.btnDisable ? 'disable': '')} onClick={this.submitInfo.bind(this)}>
+                            <View className={'button ' + (this.state.btnDisable ? 'disable': '')} onClick={this.nextPage.bind(this)}>
                                  下一步
                             </View>
                         </View>

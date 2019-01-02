@@ -156,7 +156,7 @@ export default class userCarInfo extends Component{
         }
         let params = {
             Step: 4,
-            CCustomerApply: param
+            CCustomerAddr: param
         }
         this.setState({btnDisable: true})
         let that = this
@@ -164,11 +164,30 @@ export default class userCarInfo extends Component{
         HTTP.post('SubInfo/UserAndCar', params).then(()=> {
             this.setState({btnDisable: false})
             // 成功后
-            that.props.getUserBaseInfo()
-            Taro.navigateBack({url: '/pages/user-carinfo/user-carinfo'})
+            that.endOneLoop()
         }).catch(()=> {
             this.setState({btnDisable: false})
         })
+    }
+    endOneLoop() { //结束一轮操作清空数据
+        var that = this
+        var _params = {
+          Relation: this.newApply && this.newApply['Relation']
+        }
+        HTTP.post('SubInfo/CompSub', _params)
+          .then(function(res) {
+              console.log(res);
+              
+            if (res.issuccess) {
+                that.props.getUserBaseInfo()
+                Taro.navigateTo({url: '/pages/index/index'})
+            } else {
+                return showTips(res.message)
+            }
+          })
+          .catch(function(error) {
+            console.log(error)
+          })
     }
     switchSelf(val) {
         this.isSelf = val

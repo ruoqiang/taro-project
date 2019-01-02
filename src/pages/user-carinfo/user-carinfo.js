@@ -38,10 +38,10 @@ export default class userCarInfo extends Component{
         this.newApply = this.props.counter.userApplyStepList && this.props.counter.userApplyStepList.apply
         if (this.newApply) {
             this.isSelf = this.newApply['IsOwnerApply'] || true
+            this.CarColorType = this.newApply['CarColorType'] || 0
             this.sex = this.newApply['Sex'] || '1'
             this.setState({isSelf: this.isSelf}) // 用来辅助更新view的
-            this.setState({selectorChecked: this.newApply['CarColor']})
-            // this.setState({CarColorType: Number(this.newApply['CarColorType'])})
+            this.setState({selectorChecked: this.newApply['CarColor']  || '蓝牌'})
             this.forms = this.newApply
             this.setState({
                 carno:( this.newApply && this.newApply.CarNum &&(this.newApply.CarNum).split('')) || ['沪','A','B']
@@ -126,7 +126,7 @@ export default class userCarInfo extends Component{
                             <View className='form-list'>
                                 <Text className='label'>车牌颜色</Text> 
                                 {/* <Input type='text' className='input' placeholder='请输入车牌颜色'  maxLength='13' value={this.newApply && this.newApply['CarColor']} /> */}
-                                <Picker className='carcolor' range={this.state.selector} value={this.newApply && this.newApply['CarColorType']} onChange={this.onChange}> <View className='picker'>
+                                <Picker className='carcolor' range={this.state.selector} value={this.state.CarColorType} onChange={this.onChange}> <View className='picker'>
                                     {this.state.selectorChecked}
                                 </View></Picker>
                             </View>
@@ -159,7 +159,7 @@ export default class userCarInfo extends Component{
                             </View>
                             <View className='form-list'>
                                 <Text className='label'>车辆识别代码</Text> 
-                                <Input type='text' className='input' placeholder='请输入车辆识别代码'  maxLength='13'  value={this.newApply && this.newApply['CarVin']}  onChange={this.handleInputChange.bind(this,'EngineNum')} />
+                                <Input type='text' className='input' placeholder='请输入车辆识别代码'  maxLength='13'  value={this.newApply && this.newApply['CarVin']}  onChange={this.handleInputChange.bind(this,'CarVin')} />
                             </View>
                             <View className='form-list'>
                                 <Text className='label'>车辆品牌</Text> 
