@@ -39,7 +39,7 @@ export default class userBaseInfo extends Component{
             this.forms = this.newApply
         }
     }
-    handleInputChange(keywords, e) {
+    handleInputChange(keywords, e) { //该方式会导致界面上输入框的值，第一次在修改state下的单选按钮状态时 刷新页面丢失数据
         this.forms[keywords] = e.target.value
     }
     submitInfo () {
@@ -51,8 +51,8 @@ export default class userBaseInfo extends Component{
             CarOwnerName: this.forms.CarOwnerName || '',
             CarOwnerIDNum: this.forms.CarOwnerIDNum || '',
             CarOwnerPhone: this.forms.CarOwnerPhone || '',
-            isSelf :this.isSelf,
-            Sex: this.sex
+            isSelf :this.isSelf || true,
+            Sex: this.sex || '1'
         }
         if (param.Name === '') {
             return showTips('请输入姓名')
@@ -124,7 +124,7 @@ export default class userBaseInfo extends Component{
                             <View className='form-list'>
                                 <Text className='label'>性别</Text>
                                     <View className='sex-box'>
-                                        <View className={this.state.sex=== '1' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'1')}></View><View className='b'>是</View> <View className={this.sex=== '0' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'0')}></View><View  className='b'>否</View>
+                                        <View className={this.sex=== '1' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'1')}></View><View className='b'>是</View> <View className={this.sex=== '0' ? 'active span' : 'span'} onClick={this.switchSex.bind(this,'0')}></View><View  className='b'>否</View>
                                     </View>
                             </View>
                             <View className='form-list'>
@@ -144,7 +144,7 @@ export default class userBaseInfo extends Component{
                             <View className='form-list'>
                                 <Text className='label'>是否为申请人本人车辆</Text>
                                     <View className='sex-box self-box'>
-                                        <View className={this.state.isSelf=== true ? 'active span' : 'span'} onClick={this.switchSelf.bind(this,true)}></View><View className='b'>是</View> <View className={this.isSelf=== false ? 'active span' : 'span'} onClick={this.switchSelf.bind(this,false)}></View><View  className='b'>否</View>
+                                        <View className={this.isSelf=== true ? 'active span' : 'span'} onClick={this.switchSelf.bind(this,true)}></View><View className='b'>是</View> <View className={this.isSelf=== false ? 'active span' : 'span'} onClick={this.switchSelf.bind(this,false)}></View><View  className='b'>否</View>
                                     </View>
                             </View>
                         </View>
